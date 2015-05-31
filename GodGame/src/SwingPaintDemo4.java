@@ -4,9 +4,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
+import javax.swing.Timer;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics; 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
@@ -36,18 +43,47 @@ public class SwingPaintDemo4 {
 
 }
 
-class MyPanel extends JPanel {
+class MyPanel extends JPanel implements ActionListener {
 
     RedSquare redSquare = new RedSquare();
+    
+    Timer t = new Timer(5, this);
+    
+    public void actionPerformed(ActionEvent e){
+    	repaint();
+    }
 
     public MyPanel() {
 
+    	t.start();
+    	setFocusable(true);
+    	setFocusTraversalKeysEnabled(false);
+    	
         setBorder(BorderFactory.createLineBorder(Color.black));
 
         addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent e){
                 moveSquare(e.getX(),e.getY());
             }
+        });
+        
+        addKeyListener(new KeyAdapter(){
+        	public void keyPressed(KeyEvent e){
+        		int code = e.getKeyCode();
+        		if(code==KeyEvent.VK_UP){
+        			up();
+        		}
+        		if(code==KeyEvent.VK_DOWN){
+        			down();
+        		}
+        		if(code==KeyEvent.VK_LEFT){
+        			left();
+        		}
+        		if(code==KeyEvent.VK_RIGHT){
+        			right();
+        		}
+        		
+        	}	
         });
 
         addMouseMotionListener(new MouseAdapter(){
@@ -57,6 +93,22 @@ class MyPanel extends JPanel {
         });
 
     }
+    
+    private void up(){
+    	redSquare.setY(redSquare.getY()-2);
+    }
+    
+    private void down(){
+    	redSquare.setY(redSquare.getY()+2);
+    }
+
+	private void left(){
+		redSquare.setX(redSquare.getX()-2);
+	}
+
+	private void right(){
+		redSquare.setX(redSquare.getX()+2);
+	}	   
 
     private void moveSquare(int x, int y){
 
@@ -94,7 +146,9 @@ class MyPanel extends JPanel {
         g.drawString("This is my custom Panel!",10,20);
 
         redSquare.paintSquare(g);
-    }  
+    }
+
+
 }
 
 class RedSquare{
