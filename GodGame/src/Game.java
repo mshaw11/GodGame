@@ -4,9 +4,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 public class Game extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 3716160794145432149L;
@@ -21,9 +18,11 @@ public class Game extends Canvas implements Runnable {
 	
 	public Game() {
 		
-		handler = new Handler();
+		handler = new Handler();	
 		
 		new Window(WIDTH, HEIGHT, "Game", this);
+		
+		this.addKeyListener(new KeyInput(handler));
 		
 		r = new Random();
 		
@@ -32,6 +31,7 @@ public class Game extends Canvas implements Runnable {
 		//}
 		
 		handler.addObject(new Player(WIDTH/2-32,HEIGHT/2-32,ID.Player));
+		handler.addObject(new Player(WIDTH/2-100,HEIGHT/2-100,ID.Player2));
 	}
 
 	public void init() {
@@ -52,7 +52,7 @@ public class Game extends Canvas implements Runnable {
 
 		Graphics g = bs.getDrawGraphics();
 
-		g.setColor(Color.green);
+		g.setColor(Color.black);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
 		handler.render(g);
