@@ -1,39 +1,131 @@
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.util.Random;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+public class Game extends Canvas implements Runnable {
 
-public class Game {
-	
+	private static final long serialVersionUID = 3716160794145432149L;
+
+	public static final int WIDTH = 640, HEIGHT = WIDTH / 12 * 9;
+
 	private boolean running = false;
 	private Thread thread;
-	static GameTimer gameLoop;
 	
-	public static void main(String [] args){
-		Game game = new Game();
-		gameLoop = new GameTimer();
-	}
+	private Random r;
+	private Handler handler;
 	
 	public Game() {
-		//Set up relevant objects - players etc.
-		//Start game timer
-		//
-		createAndShowGUI();
+		
+		handler = new Handler();
+		
+		new Window(WIDTH, HEIGHT, "Game", this);
+		
+		r = new Random();
+		
+		//for (int i = 0; i<50; i++){
+		//	handler.addObject(new Player(0,0,ID.Player));
+		//}
+		
+		handler.addObject(new Player(WIDTH/2-32,HEIGHT/2-32,ID.Player));
+	}
+
+	public void init() {
+
+	}
+
+	// CALLED TICK IN TUTORIAL
+	private void update() {
+		handler.update();
+	}
+
+	private void render() {
+		BufferStrategy bs = this.getBufferStrategy();
+		if (bs == null) {
+			this.createBufferStrategy(3);
+			return;
+		}
+
+		Graphics g = bs.getDrawGraphics();
+
+		g.setColor(Color.green);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
+
+		handler.render(g);
+		
+		g.dispose();
+		bs.show();
+	}
+
+	@Override
+	public void run() {
+		init();
+		long lastTime = System.nanoTime();
+		final double numTicks = 60.0;
+		double n = 1000000000 / numTicks;
+		double delta = 0;
+		int frames = 0;
+		int updates = 0;
+		long timer = System.currentTimeMillis();
+
+		while (running) {
+			long currentTime = System.nanoTime();
+			delta += (currentTime - lastTime) / n;
+			lastTime = currentTime;
+
+			if (delta >= 1) {
+				// CALLED TICK IN TUTORIAL
+				update();
+				updates++;
+				delta--;
+			}
+
+			render();
+			frames++;
+
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				System.out.println(updates + " Ticks, FPS: " + frames);
+				updates = 0;
+				frames = 0;
+			}
+
+		}
+
+		stop();
+
+	}
+
+	protected synchronized void start() {
+		if (running) {
+			return;
+		} else {
+			running = true;
+			thread = new Thread(this);
+			thread.start();
+		}
+	}
+
+	private synchronized void stop() {
+		if (!running) {
+			return;
+		} else {
+			running = false;
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
 	}
 	
-	 private static void createAndShowGUI() {
-	        System.out.println("Created GUI on EDT? "+
-	        SwingUtilities.isEventDispatchThread());
-	        JFrame f = new JFrame("Swing Paint Demo");
-	        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-	        f.add(new CanvasPanel());
-	        f.setSize(250,250);
-	        f.setLocationRelativeTo(null);
-	        f.setVisible(true);
-	        f.pack();
-	    }
-	 
+	public static void main(String[] args) {
+		new Game();
+	}
 
-
-
-	
 }
