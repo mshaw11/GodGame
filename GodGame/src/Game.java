@@ -1,6 +1,7 @@
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
 
@@ -32,6 +33,7 @@ public class Game extends Canvas implements Runnable {
 		
 		handler.addObject(new Player(WIDTH/2-32,HEIGHT/2-32,ID.Player));
 		handler.addObject(new Player(WIDTH/2-100,HEIGHT/2-100,ID.Player2));
+		handler.addObject(new Sprite(100,100,ID.Player));
 	}
 
 	public void init() {
@@ -50,7 +52,7 @@ public class Game extends Canvas implements Runnable {
 			return;
 		}
 
-		Graphics g = bs.getDrawGraphics();
+		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
 		g.setColor(Color.black);
 		g.fillRect(0, 0, WIDTH, HEIGHT);

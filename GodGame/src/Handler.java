@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.LinkedList;
 
 
@@ -15,7 +16,7 @@ public class Handler {
 		}
 	}
 	// Render is draw - draw for every game object
-	public void render(Graphics g){
+	public void render(Graphics2D g){
 		for (int i = 0; i<object.size(); i++){
 			GameObject tempObject = object.get(i);
 			tempObject.render(g);

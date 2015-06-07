@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 
 public abstract class GameObject {
@@ -18,7 +19,7 @@ public abstract class GameObject {
     
     //CALLED TICK IN TUTORIAL
     public abstract void update();
-    public abstract void render(Graphics g);
+    public abstract void render(Graphics2D g);
     
     public void setX(int xPos){ 
         this.xPos = xPos;
